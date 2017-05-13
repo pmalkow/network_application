@@ -11,4 +11,6 @@ public interface UserRepository {
 	void postMessage(String userName, String message);
 
 	Optional<User> get(String userName);
+
+	void delete(String userName);
 }

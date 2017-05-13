@@ -31,4 +31,9 @@ public class InMemoryRepository implements UserRepository {
 		return Optional.empty();
 	}
 
+	@Override
+	public void delete(String userName) {
+		users.remove(userName);
+	}
+
 }

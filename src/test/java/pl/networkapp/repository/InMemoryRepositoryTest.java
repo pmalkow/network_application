@@ -41,4 +41,14 @@ public class InMemoryRepositoryTest {
 		assertThat(user.get().getMessages()).size().isEqualTo(3);
 	}
 
+	@Test
+	public void shouldRemoveUser() {
+		repository.create(USER_NAME);
+
+		repository.delete(USER_NAME);
+
+		Optional<User> user = repository.get(USER_NAME);
+		assertThat(user).isNotPresent();
+	}
+
 }
