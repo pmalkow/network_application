@@ -24,6 +24,12 @@ public class InMemoryRepository implements UserRepository {
 	}
 
 	@Override
+	public void follow(String userName, String userToFollow) {
+		User user = users.get(userToFollow);
+		users.get(userName).getFollowingUsers().add(user);
+	}
+
+	@Override
 	public Optional<User> get(String userName) {
 		if (users.containsKey(userName)) {
 			return Optional.of(users.get(userName));

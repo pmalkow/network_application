@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.servlet.HandlerExecutionChain
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
+import pl.networkapp.interceptors.FollowRequestInterceptor
 import pl.networkapp.interceptors.PostRequestInterceptor
 import pl.networkapp.interceptors.WallRequestInterceptor
 import pl.networkapp.repository.UserRepository
@@ -26,6 +27,7 @@ class SocialNetworkControllerSpec extends Specification {
     @Autowired private ApplicationContext applicationContext
 
     def userName = 'userName'
+    def userName2 = 'userName2'
     def message1 = 'message'
     def message2 = 'another message'
 
@@ -92,6 +94,28 @@ class SocialNetworkControllerSpec extends Specification {
 
     }
 
+    def 'should follow one user by another one'() {
+        given: '2 existing users'
+        userRepository.create(userName)
+        userRepository.create(userName2)
+
+        when: 'user tries to follow another user'
+        def response = appClient.post(
+                path: '/follow/' + userName2,
+                headers: ['UserId': userName],
+                requestContentType: ContentType.JSON
+        )
+
+        then: 'user2 is followed by user1 and it is not reciprocal relation'
+        response.status == 201
+        def user1 = userRepository.get(userName).get()
+        def user2 = userRepository.get(userName2).get()
+        user1.followingUsers.size() == 1
+        user1.followingUsers.contains(user2)
+        user2.followingUsers.size() == 0
+
+    }
+
     def 'should apply proper interceptors'(HttpMethod method, String path, Class[] interceptors) {
         given:
         MockHttpServletRequest request = new MockHttpServletRequest(method.name(), path)
@@ -109,6 +133,7 @@ class SocialNetworkControllerSpec extends Specification {
         method | path                            | interceptors
         POST   | '/post'                         | [PostRequestInterceptor]
         GET    | '/wall'                         | [WallRequestInterceptor]
+        POST   | '/follow/123'                   | [FollowRequestInterceptor]
     }
 
 }

@@ -10,6 +10,8 @@ public interface UserRepository {
 
 	void postMessage(String userName, String message);
 
+	void follow(String userName, String userToFollow);
+
 	Optional<User> get(String userName);
 
 	void delete(String userName);
