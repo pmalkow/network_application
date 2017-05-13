@@ -6,10 +6,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+import pl.networkapp.domain.User;
 import pl.networkapp.repository.FeedProvider;
 import pl.networkapp.repository.UserRepository;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static pl.networkapp.domain.MessageValidator.MAX_LENGTH;
 
@@ -50,6 +54,26 @@ public class SocialNetworkControllerTest {
 		controller.getMyMessages(userId);
 
 		then(feedProvider).should().getUsersFeed(userId);
+	}
+
+	@Test
+	public void shouldFollowUser() {
+		String otherId = "otherId";
+		given(userRepository.get(otherId)).willReturn(Optional.of(new User(otherId)));
+
+		controller.follow(userId, otherId);
+
+		then(userRepository).should().follow(userId, otherId);
+	}
+
+	@Test
+	public void shouldReturnNotFoundWhenUserToFollowDoesNotExist() {
+		String otherId = "otherId";
+		given(userRepository.get(otherId)).willReturn(Optional.empty());
+
+		ResponseEntity<Void> result = controller.follow(userId, otherId);
+
+		assertThat(result.getStatusCodeValue()).isEqualTo(404);
 	}
 
 	private String tooLongMessage() {

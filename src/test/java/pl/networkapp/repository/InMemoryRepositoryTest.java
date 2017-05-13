@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InMemoryRepositoryTest {
 
 	private static final String USER_NAME = "userName";
+	private static final String USER_NAME2 = "userName2";
 
 	private InMemoryRepository repository = new InMemoryRepository();
 
@@ -49,6 +50,20 @@ public class InMemoryRepositoryTest {
 
 		Optional<User> user = repository.get(USER_NAME);
 		assertThat(user).isNotPresent();
+	}
+
+	@Test
+	public void shouldFollowUser() {
+		repository.create(USER_NAME);
+		repository.create(USER_NAME2);
+
+		repository.follow(USER_NAME, USER_NAME2);
+
+		Optional<User> user = repository.get(USER_NAME);
+		Optional<User> user2 = repository.get(USER_NAME2);
+
+		assertThat(user.get().getFollowingUsers()).size().isEqualTo(1);
+		assertThat(user.get().getFollowingUsers()).contains(user2.get());
 	}
 
 }
