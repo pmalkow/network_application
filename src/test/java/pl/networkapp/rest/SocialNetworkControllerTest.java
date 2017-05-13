@@ -76,6 +76,13 @@ public class SocialNetworkControllerTest {
 		assertThat(result.getStatusCodeValue()).isEqualTo(404);
 	}
 
+	@Test
+	public void shouldGetFeedsForFollowingUser() {
+		controller.getFollowingFeed(userId);
+
+		then(feedProvider).should().getFollowingFeed(userId);
+	}
+
 	private String tooLongMessage() {
 		StringBuilder sb = new StringBuilder(MAX_LENGTH + 1);
 		for (int i = 0; i < MAX_LENGTH + 1; i++) {

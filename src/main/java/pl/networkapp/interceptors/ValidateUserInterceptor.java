@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 import static pl.networkapp.AppConfig.USER_ID_HEADER;
-import static pl.networkapp.interceptors.RequestValidator.isInvalidRequest;
+import static pl.networkapp.interceptors.HeaderValidator.isInvalidRequest;
 
 @Component
-public class WallRequestInterceptor extends HandlerInterceptorAdapter {
+public class ValidateUserInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired private UserRepository userRepository;
 

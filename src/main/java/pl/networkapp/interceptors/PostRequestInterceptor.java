@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static pl.networkapp.AppConfig.USER_ID_HEADER;
-import static pl.networkapp.interceptors.RequestValidator.isInvalidRequest;
+import static pl.networkapp.interceptors.HeaderValidator.isInvalidRequest;
 
 @Component
 public class PostRequestInterceptor extends HandlerInterceptorAdapter {

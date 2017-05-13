@@ -25,14 +25,14 @@ public class WallRequestInterceptorTest {
 	private UserRepository userRepository;
 
 	@InjectMocks
-	private WallRequestInterceptor wallRequestInterceptor;
+	private ValidateUserInterceptor validateUserInterceptor;
 
 	@Test
 	public void shouldIndicateBadRequestWhenEmptyHeader() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 
-		boolean result = wallRequestInterceptor.preHandle(request, response, null);
+		boolean result = validateUserInterceptor.preHandle(request, response, null);
 
 		assertThat(result).isFalse();
 		assertThat(response.getStatus()).isEqualTo(400);
@@ -44,7 +44,7 @@ public class WallRequestInterceptorTest {
 		request.addHeader(USER_ID_HEADER, "");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 
-		boolean result = wallRequestInterceptor.preHandle(request, response, null);
+		boolean result = validateUserInterceptor.preHandle(request, response, null);
 
 		assertThat(result).isFalse();
 		assertThat(response.getStatus()).isEqualTo(400);
@@ -57,7 +57,7 @@ public class WallRequestInterceptorTest {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		given(userRepository.get(USER_ID)).willReturn(Optional.empty());
 
-		boolean result = wallRequestInterceptor.preHandle(request, response, null);
+		boolean result = validateUserInterceptor.preHandle(request, response, null);
 
 		assertThat(result).isFalse();
 		assertThat(response.getStatus()).isEqualTo(404);
@@ -70,7 +70,7 @@ public class WallRequestInterceptorTest {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		given(userRepository.get(USER_ID)).willReturn(Optional.of(new User(USER_ID)));
 
-		boolean result = wallRequestInterceptor.preHandle(request, response, null);
+		boolean result = validateUserInterceptor.preHandle(request, response, null);
 
 		assertThat(result).isTrue();
 	}
