@@ -14,23 +14,25 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static pl.networkapp.AppConfig.USER_ID_HEADER;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PostRequestInterceptorTest {
+public class WallRequestInterceptorTest {
 
 	private static final String USER_ID = "userId";
 
-	@Mock private UserRepository userRepository;
-	@InjectMocks private PostRequestInterceptor postRequestInterceptor;
+	@Mock
+	private UserRepository userRepository;
+
+	@InjectMocks
+	private WallRequestInterceptor wallRequestInterceptor;
 
 	@Test
 	public void shouldIndicateBadRequestWhenEmptyHeader() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 
-		boolean result = postRequestInterceptor.preHandle(request, response, null);
+		boolean result = wallRequestInterceptor.preHandle(request, response, null);
 
 		assertThat(result).isFalse();
 		assertThat(response.getStatus()).isEqualTo(400);
@@ -42,23 +44,23 @@ public class PostRequestInterceptorTest {
 		request.addHeader(USER_ID_HEADER, "");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 
-		boolean result = postRequestInterceptor.preHandle(request, response, null);
+		boolean result = wallRequestInterceptor.preHandle(request, response, null);
 
 		assertThat(result).isFalse();
 		assertThat(response.getStatus()).isEqualTo(400);
 	}
 
 	@Test
-	public void shouldCreateUserForNonExistingOneAndContinueProcessing() throws Exception {
+	public void shouldIndicateNotFoundWhenGettingWallOfNonExistingUser() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(USER_ID_HEADER, USER_ID);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		given(userRepository.get(USER_ID)).willReturn(Optional.empty());
 
-		boolean result = postRequestInterceptor.preHandle(request, response, null);
+		boolean result = wallRequestInterceptor.preHandle(request, response, null);
 
-		assertThat(result).isTrue();
-		then(userRepository).should().create(USER_ID);
+		assertThat(result).isFalse();
+		assertThat(response.getStatus()).isEqualTo(404);
 	}
 
 	@Test
@@ -68,7 +70,7 @@ public class PostRequestInterceptorTest {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		given(userRepository.get(USER_ID)).willReturn(Optional.of(new User(USER_ID)));
 
-		boolean result = postRequestInterceptor.preHandle(request, response, null);
+		boolean result = wallRequestInterceptor.preHandle(request, response, null);
 
 		assertThat(result).isTrue();
 	}

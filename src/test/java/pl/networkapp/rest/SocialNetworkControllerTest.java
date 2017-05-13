@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+import pl.networkapp.repository.FeedProvider;
 import pl.networkapp.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +19,7 @@ public class SocialNetworkControllerTest {
 	private static final String userId = "userId";
 
 	@Mock private UserRepository userRepository;
+	@Mock private FeedProvider feedProvider;
 	@InjectMocks private SocialNetworkController controller;
 
 	@Test
@@ -39,8 +41,15 @@ public class SocialNetworkControllerTest {
 		String someMessage = "someMessage";
 		ResponseEntity<Void> response = controller.postMessage(userId, someMessage);
 
-		assertThat(response.getStatusCodeValue()).isEqualTo(200);
+		assertThat(response.getStatusCodeValue()).isEqualTo(201);
 		then(userRepository).should().postMessage(userId, someMessage);
+	}
+
+	@Test
+	public void shouldGetFeedsForAnUser() {
+		controller.getMyMessages(userId);
+
+		then(feedProvider).should().getUsersFeed(userId);
 	}
 
 	private String tooLongMessage() {
