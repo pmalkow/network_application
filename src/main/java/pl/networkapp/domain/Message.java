@@ -1,22 +1,20 @@
 package pl.networkapp.domain;
 
-import java.util.Date;
-
 public class Message {
 
 	private String message;
-	private Date creationDate;
+	private long creationDate;
 
 	public Message(String message) {
 		this.message = message;
-		this.creationDate = new Date();
+		this.creationDate = System.nanoTime();
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public Date getCreationDate() {
+	public long getCreationDate() {
 		return creationDate;
 	}
 }

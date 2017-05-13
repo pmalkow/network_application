@@ -42,6 +42,11 @@ class SocialNetworkController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
+	@RequestMapping(value = "/followingFeed", method = RequestMethod.GET)
+	ResponseEntity<List<String>> getFollowingFeed(@RequestHeader(value = USER_ID_HEADER) String userId) {
+		return new ResponseEntity<>(feedProvider.getFollowingFeed(userId), HttpStatus.OK);
+	}
+
 	private boolean userToFollowDoesNotExist(@PathVariable String user) {
 		return !userRepository.get(user).isPresent();
 	}
