@@ -116,10 +116,10 @@ class SocialNetworkControllerSpec extends Specification {
         response.responseData.get(1) == message2
         response.responseData.get(2) == message1
 
-        when: 'user 2 posts one more message and user 1 tries to retrieve feed'
+        when: 'user 2 posts one more message'
         postAMessage(userName2, 'some message')
 
-        then: 'feeds from following users are retrieved with newest one'
+        then: 'feeds for user 1 are retrieved with newest one'
         def response2 = getFollowingFeed(userName)
         response2.status == 200
         response2.responseData.size() == 4
