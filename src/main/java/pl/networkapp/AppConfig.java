@@ -11,7 +11,6 @@ import pl.networkapp.interceptors.ValidateUserInterceptor;
 public class AppConfig extends WebMvcConfigurerAdapter {
 
 	public static final String USER_ID_HEADER = "UserId";
-	public static final String USER_TO_FOLLOW_PARAMETER = "user";
 
 	@Autowired private PostRequestInterceptor postRequestInterceptor;
 	@Autowired private ValidateUserInterceptor validateUserInterceptor;
